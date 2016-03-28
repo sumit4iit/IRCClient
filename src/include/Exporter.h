@@ -1,19 +1,21 @@
 #ifndef __EXPORTER_H__
 #define __EXPORTER_H__
 
-#include<sys/types.h>
 #include<sys/socket.h>
-
+#include<netdb.h>
 #include "localTypes.h"
 
-class Exporter
-{
-private:
-	char hostname[2048];
-	int16_t port;
+#define URL_LENGTH 1024
 
+class Exporter {
+private:
+	char hostname[URL_LENGTH];
+	uint16_t port;
+	addrinfo address;
 public:
-	int32_t send();
+	Exporter();
+	virtual size_t send(tchar* buff, size_t size);
+	virtual ~Exporter();
 };
 
 #endif //__EXPORTER_H__
