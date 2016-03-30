@@ -1,27 +1,33 @@
-#include<iostream>
-#include<netinet/ip.h>
-#include<unistd.h>
-#include<netdb.h>
-#include<arpa/inet.h>
-#include<cstdio>
-#include<cstdlib>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
+//#include <bits/socket_type.h>
 #include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <iostream>
+#include <cstdio>
+#include <string>
+
 using namespace std;
 
 #define SERVER_URL "chat.freenode.net"
 #define PORT "6667"
+#define BUFFSIZE 100
 
-int main()
-{
+int send_message(const string& message, int sfd) {
+	if (write(sfd, message.c_str(), message.length()) != message.length())
+	{
+		return -1;
+	}
+	else
+	{
+		return message.length();
+	}
+}
+int main() {
 	string s = SERVER_URL;
-	struct addrinfo hints={0}, *res;
+	struct addrinfo hints = { 0 }, *res;
 	int errorCode, status, sfd;
 
 	string url = SERVER_URL;
@@ -33,22 +39,18 @@ int main()
 	status = getaddrinfo(url.c_str(), port.c_str(), &hints, &res);
 
 	addrinfo *iter;
-	for (iter = res; iter!= NULL; iter = iter->ai_next)
-	{
+	for (iter = res; iter != NULL; iter = iter->ai_next) {
 		sfd = socket(iter->ai_family, iter->ai_socktype, iter->ai_protocol);
-		if (sfd == -1)
-		{
+		if (sfd == -1) {
 			continue;
 		}
 
-		if (connect(sfd, iter->ai_addr, iter->ai_addrlen) != -1)
-		{
+		if (connect(sfd, iter->ai_addr, iter->ai_addrlen) != -1) {
 			// we just got a connection
-			cout<<"connected\n"<<"";
-			char address[INET6_ADDRSTRLEN] = {0};
+			cout << "connected\n" << "";
+			char address[INET6_ADDRSTRLEN] = { 0 };
 			sockaddr_in *sin = reinterpret_cast<sockaddr_in*>(iter->ai_addr);
-			switch (iter->ai_addr->sa_family)
-			{
+			switch (iter->ai_addr->sa_family) {
 			case AF_INET:
 				inet_ntop(AF_INET, &sin->sin_addr, address, INET6_ADDRSTRLEN);
 				break;
@@ -56,20 +58,24 @@ int main()
 				inet_ntop(AF_INET6, &sin->sin_addr, address, INET6_ADDRSTRLEN);
 				break;
 			}
-			cout<<address<<endl;
-			cout<<ntohs(sin->sin_port)<<endl;
+			cout << address << endl;
+			cout << ntohs(sin->sin_port) << endl;
 			break;
 		}
 		close(sfd);
 	}
 
-	if (iter == NULL)
-	{
-		cout<<"Could not connect: "<<errno<<endl;
+	if (iter == NULL) {
+		cout << "Could not connect: " << errno << endl;
 	}
 
 	freeaddrinfo(res);
+	string nick = "NICK sumit4iit\r\n";
+	string user = "NICK sumit 0 : teardrop";
+	send_message(nick, sfd);
+	send_message(user, sfd);
+    char buff[BUFFSIZE] = {0};
+	while ((read(sfd, buff, BUFFSIZE)) > 0)
+            puts(buff);
 }
-
-
 
