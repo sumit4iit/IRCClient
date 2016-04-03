@@ -1,8 +1,0 @@
-
-class Connector
-{
-private:
-
-
-
-};
