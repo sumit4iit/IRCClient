@@ -7,9 +7,11 @@
 
 #ifndef _CONNECTOR_H_
 #define _CONNECTOR_H_
-#include"include/localTypes.h"
+#include "include/localTypes.h"
+#include "third_party/logging/easylogging++.h"
 
-class Connector {
+class Connector
+{
 private:
 	tstring m_tstrHost;
 	uint16_t m_uiPort;
