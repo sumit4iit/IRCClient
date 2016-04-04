@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
+#include "third_party/logging/easylogging++.h"
+INITIALIZE_EASYLOGGINGPP
 
 using namespace std;
 
@@ -16,6 +18,7 @@ using namespace std;
 #define BUFFSIZE 1024
 
 int send_message(const string& message, int sfd) {
+	LOG(INFO) << "My first info log using default logger";
 	cout<<"Sending : " << message << endl;
 	if (write(sfd, message.c_str(), message.length()) != message.length())
 	{
