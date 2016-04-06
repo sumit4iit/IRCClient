@@ -21,18 +21,21 @@ Connector::Connector(const tstring& tstrHost, const uint16_t uiPort)
 {
 	this->m_tstrHost = tstrHost;
 	this->m_uiPort = uiPort;
+	this->sfd = -1;
 }
 
 Connector::~Connector()
 {
-	// TODO Auto-generated destructor stub
+	// Close this connection
+	close(this->sfd);
 }
 
 int Connector::connect()
 {
 	struct addrinfo hints =
 	{ 0 }, *res;
-	int errorCode, status, sfd = -1;
+	int status = 0;
+	int sfd = -1;
 
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
@@ -85,6 +88,6 @@ int Connector::connect()
 	}
 
 	freeaddrinfo(res);
-
-	return sfd;
+	this->sfd = sfd;
+	return this->sfd;
 }

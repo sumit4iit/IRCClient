@@ -15,6 +15,7 @@ class Connector
 private:
 	tstring m_tstrHost;
 	uint16_t m_uiPort;
+	int sfd;
 public:
 	Connector(const tstring& host, const uint16_t port);
 
